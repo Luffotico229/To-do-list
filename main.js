@@ -74,16 +74,19 @@ const overlay = document.getElementById('overlay');
 const historyTerminal = document.getElementById('history-terminal');
 const terminalContent = document.getElementById('terminal-content');
 const closeTerminalBtn = document.getElementById('close-terminal');
+const sideInfo = document.getElementById('side-info');
 
 function openMenu(){
   floatingMenu.classList.remove('hidden');
   floatingMenu.setAttribute('aria-hidden','false');
   overlay.classList.remove('hidden');
+  // no mostrar side-info aquí para evitar que logs aparezcan sin querer
 }
 function closeMenu(){
   floatingMenu.classList.add('hidden');
   floatingMenu.setAttribute('aria-hidden','true');
   if(!historyTerminal.classList.contains('open')) overlay.classList.add('hidden');
+  sideInfo.classList.remove('visible');
 }
 menuButton.addEventListener('click', e=>{
   e.stopPropagation();
@@ -111,6 +114,10 @@ function openHistory(){
   historyTerminal.classList.add('open');
   historyTerminal.setAttribute('aria-hidden','false');
   overlay.classList.remove('hidden');
+
+  // mostrar panel derecho con logs cuando se abre History
+  sideInfo.classList.add('visible');
+  sideInfo.setAttribute('aria-hidden','false');
 }
 
 /* Cerrar terminal */
@@ -118,6 +125,10 @@ function closeHistory(){
   historyTerminal.classList.remove('open');
   historyTerminal.setAttribute('aria-hidden','true');
   if(floatingMenu.classList.contains('hidden')) overlay.classList.add('hidden'); else overlay.classList.remove('hidden');
+
+  // ocultar panel derecho al cerrar historial
+  sideInfo.classList.remove('visible');
+  sideInfo.setAttribute('aria-hidden','true');
 }
 
 /* Botón cerrar dentro del terminal */
@@ -163,12 +174,3 @@ function pushHistory(text){
   if(arr.length>200) arr.pop();
   localStorage.setItem('history', JSON.stringify(arr));
 }
-
-/* Hooks para history */
-document.getElementById('add-btn').addEventListener('click', ()=> {}); // already pushes inside addTask
-document.getElementById('task-list').addEventListener('click', e=>{
-  if(e.target.matches('.del')) {} // handled above
-});
-document.getElementById('task-list').addEventListener('change', e=>{
-  if(e.target.matches('.chk')) {} // handled above
-});
