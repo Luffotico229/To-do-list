@@ -67,6 +67,7 @@ function openMenu(){
 function closeMenu(){
   floatingMenu.classList.add('hidden');
   floatingMenu.setAttribute('aria-hidden','true');
+  // si terminal está abierto, mantener overlay visible
   if(!historyTerminal.classList.contains('open')) overlay.classList.add('hidden');
 }
 menuButton.addEventListener('click', e=>{
@@ -75,15 +76,17 @@ menuButton.addEventListener('click', e=>{
 });
 
 /* Abrir historial desde menu */
-document.getElementById('menu-history').addEventListener('click', e=>{
-  e.stopPropagation();
-  openHistory();
-  closeMenu();
-});
+const menuHistory = document.getElementById('menu-history');
+if(menuHistory){
+  menuHistory.addEventListener('click', e=>{
+    e.stopPropagation();
+    openHistory();
+    closeMenu();
+  });
+}
 
 /* Abrir terminal */
 function openHistory(){
-  // llenar contenido simple (puedes personalizar)
   terminalContent.innerHTML = '';
   const logs = JSON.parse(localStorage.getItem('history') || '[]');
   if(logs.length===0) terminalContent.innerHTML = '<div style="opacity:.6">No history yet.</div>';
@@ -103,7 +106,7 @@ function closeHistory(){
 }
 
 /* Botón cerrar dentro del terminal */
-closeTerminalBtn.addEventListener('click', e=>{ e.stopPropagation(); closeHistory(); });
+if(closeTerminalBtn) closeTerminalBtn.addEventListener('click', e=>{ e.stopPropagation(); closeHistory(); });
 
 /* Click en overlay cierra todo (menu o terminal) */
 overlay.addEventListener('click', ()=>{
@@ -112,26 +115,42 @@ overlay.addEventListener('click', ()=>{
 });
 
 /* Evitar que clicks dentro del menu o terminal propaguen y cierren */
-floatingMenu.addEventListener('click', e=> e.stopPropagation());
-historyTerminal.addEventListener('click', e=> e.stopPropagation());
+if(floatingMenu) floatingMenu.addEventListener('click', e=> e.stopPropagation());
+if(historyTerminal) historyTerminal.addEventListener('click', e=> e.stopPropagation());
 
 /* Cerrar con ESC */
 document.addEventListener('keydown', e=>{
   if(e.key === 'Escape'){ closeMenu(); closeHistory(); }
 });
 
+/* ---------- Timer de reset (ejemplo simple, visible y responsive) ---------- */
+function updateResetTimer(){
+  const el = document.getElementById('reset-timer');
+  // ejemplo: reset a medianoche local
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(24,0,0,0);
+  const diff = next - now;
+  const hrs = Math.floor(diff / (1000*60*60));
+  const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+  const secs = Math.floor((diff % (1000*60)) / 1000);
+  el.textContent = `Reset in: ${hrs}h ${mins}m ${secs}s`;
+}
+setInterval(updateResetTimer, 1000);
+updateResetTimer();
+
 /* ---------- Inicialización ---------- */
 renderTasks();
 
-/* ---------- Opcional: guardar acciones en history (ejemplo) ---------- */
+/* ---------- History helper (opcional) ---------- */
 function pushHistory(text){
   const arr = JSON.parse(localStorage.getItem('history') || '[]');
   arr.unshift(`${new Date().toLocaleString()} - ${text}`);
-  if(arr.length>100) arr.pop();
+  if(arr.length>200) arr.pop();
   localStorage.setItem('history', JSON.stringify(arr));
 }
 
-/* Ejemplos de hooks para history: */
+/* Hooks para history */
 document.getElementById('add-btn').addEventListener('click', ()=> pushHistory('Added task'));
 document.getElementById('task-list').addEventListener('click', e=>{
   if(e.target.matches('.del')) pushHistory('Deleted task');
