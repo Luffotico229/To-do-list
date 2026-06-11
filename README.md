@@ -1,18 +1,53 @@
-# Daily To Do List ✅
+# ⚡ Cyberpunk To‑Do List — Netrunner Edition
 
-A cyberpunk-themed daily task manager built with HTML, CSS and JavaScript. Inspired by Cyberpunk Edgerunners.
+A futuristic, hacker‑style to‑do list inspired by **Cyberpunk 2077** and **Edgerunners**.  
+Designed to feel like a real netrunner interface from Night City.
 
-## 🛠️ Technologies
-- HTML
-- CSS
-- JavaScript
+This project is **actively in development** and new features are being added frequently.
 
-## ✨ Features
-- Add custom tasks
-- Mark tasks as completed
-- Cyberpunk Edgerunners aesthetic
+---
 
-## 🚧 In Development
-> ⚠️ This project is actively being developed. More features coming soon.
-- Auto-reset at midnight
-- Task persistence with localStorage
+## 🚀 Live Demo
+Hosted on GitHub Pages:  
+👉 https://YOUR-USERNAME.github.io/todo-list/
+
+*(Replace `YOUR-USERNAME` with your GitHub username.)*
+
+---
+
+## 🧩 Features
+
+### 🔹 Cyberpunk UI
+- Neon glow (cyan + magenta)
+- Glitch animation effects
+- Scanlines overlay
+- Futuristic hologram panels
+- Terminal‑style typography
+
+### 🔹 Task Management
+- Add tasks  
+- Mark as completed  
+- Delete tasks  
+- Auto‑save using `localStorage`
+
+### 🔹 Points System
+- +10 points for completing a task  
+- –5 points for deleting a task  
+- Persistent score tracking  
+
+### 🔹 Daily Auto‑Reset
+At midnight:
+- Tasks are archived  
+- Score is saved  
+- List resets for the next day  
+
+### 🔹 Holographic Terminal History
+- Slides in from the right  
+- Typewriter animation  
+- Database‑style logs  
+- Glitch overlay  
+
+---
+
+## 📁 Project Structure
+
