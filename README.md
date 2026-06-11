@@ -3,22 +3,20 @@
 A futuristic, hacker‑style to‑do list inspired by **Cyberpunk 2077** and **Edgerunners**.  
 Designed to feel like a real netrunner interface from Night City.
 
-This project is **actively in development** and new features are being added frequently.
+This project is **still in development**, and new features are being added frequently.
 
 ---
 
 ## 🚀 Live Demo
 Hosted on GitHub Pages:  
-👉 https://YOUR-USERNAME.github.io/todo-list/
-
-*(Replace `YOUR-USERNAME` with your GitHub username.)*
+👉 https://luffotico229.github.io/To-do-list/
 
 ---
 
 ## 🧩 Features
 
 ### 🔹 Cyberpunk UI
-- Neon glow (cyan + magenta)
+- Neon glow (cyan, green, yellow)
 - Glitch animation effects
 - Scanlines overlay
 - Futuristic hologram panels

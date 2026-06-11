@@ -1,29 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Cyberpunk To‑Do</title>
+    <title>Cyberpunk To‑Do — Netrunner Edition</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-    <input type="text" id="task-input" placeholder="New task...">
-    <button onclick="addTask()">+ Add Task</button>
+    <!-- PANEL IZQUIERDO: INPUT + MENÚ -->
+    <div id="left-panel">
 
-    <h1 class="neon">Today's Tasks</h1>
+        <div id="task-input-box">
+            <input type="text" id="task-input" placeholder="New task...">
+            <button id="add-btn" onclick="addTask()">ADD</button>
+        </div>
 
-    <ul id="task-list"></ul>
+        <!-- MENÚ FLOTANTE -->
+        <button id="menu-button">◎</button>
 
-    <div id="score-box">Score: <span id="score">0</span></div>
-    <div id="reset-timer">Reset in: --</div>
+        <div id="floating-menu">
+            <div class="menu-item" onclick="openHistory()">History</div>
+            <div class="menu-item" onclick="openSettings()">Settings</div>
+            <div class="menu-item" onclick="openThemes()">Themes</div>
+        </div>
 
-    <!-- MENÚ FLOTANTE -->
-    <button id="menu-button">◎</button>
+    </div>
 
-    <div id="floating-menu">
-        <div class="menu-item" onclick="openHistory()">Historial</div>
-        <div class="menu-item">Configuración</div>
-        <div class="menu-item">Tema</div>
+    <!-- PANEL DERECHO: LISTA DE TAREAS -->
+    <div id="task-panel">
+        <h1 class="neon">Today's Tasks</h1>
+        <ul id="task-list"></ul>
+    </div>
+
+    <!-- FOOTER: SCORE + TIMER -->
+    <div id="footer">
+        <div id="score-box">Score: <span id="score">0</span></div>
+        <div id="reset-timer">Reset in: --</div>
     </div>
 
     <!-- TERMINAL HOLOGRÁFICA -->
