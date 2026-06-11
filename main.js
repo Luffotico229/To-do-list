@@ -13,7 +13,7 @@ function renderTasks(){
         <span>${escapeHtml(t.text)}</span>
       </label>
       <div>
-        <button data-del="${i}" class="del">X</button>
+        <button data-del="${i}" class="del" aria-label="Delete task">X</button>
       </div>
     `;
     ul.appendChild(li);
@@ -32,15 +32,30 @@ function addTask(){
   const text = input.value.trim();
   if(!text) return;
   tasks.push({ text, completed:false });
-  saveTasks(); renderTasks();
+  saveTasks();
+  renderTasks();
+
+  // animación: marcar el último item con clase 'added'
+  const ul = document.getElementById('task-list');
+  const last = ul.lastElementChild;
+  if(last){
+    last.classList.add('added');
+    setTimeout(()=> last.classList.remove('added'), 420);
+    last.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
   input.value = '';
+  input.focus();
+  pushHistory('Added task: ' + text);
 }
 
 /* Delegación para checkbox y delete */
 document.getElementById('task-list').addEventListener('click', e=>{
   if(e.target.matches('.del')){
     const i = Number(e.target.dataset.del);
-    tasks.splice(i,1); saveTasks(); renderTasks();
+    const removed = tasks.splice(i,1);
+    saveTasks(); renderTasks();
+    pushHistory('Deleted task: ' + (removed[0]?.text || ''));
   }
 });
 document.getElementById('task-list').addEventListener('change', e=>{
@@ -48,6 +63,7 @@ document.getElementById('task-list').addEventListener('change', e=>{
     const i = Number(e.target.dataset.index);
     tasks[i].completed = e.target.checked;
     saveTasks(); renderTasks();
+    pushHistory('Toggled task: ' + tasks[i].text);
   }
 });
 
@@ -67,7 +83,6 @@ function openMenu(){
 function closeMenu(){
   floatingMenu.classList.add('hidden');
   floatingMenu.setAttribute('aria-hidden','true');
-  // si terminal está abierto, mantener overlay visible
   if(!historyTerminal.classList.contains('open')) overlay.classList.add('hidden');
 }
 menuButton.addEventListener('click', e=>{
@@ -123,10 +138,9 @@ document.addEventListener('keydown', e=>{
   if(e.key === 'Escape'){ closeMenu(); closeHistory(); }
 });
 
-/* ---------- Timer de reset (ejemplo simple, visible y responsive) ---------- */
+/* ---------- Timer de reset (visible y responsive) ---------- */
 function updateResetTimer(){
   const el = document.getElementById('reset-timer');
-  // ejemplo: reset a medianoche local
   const now = new Date();
   const next = new Date(now);
   next.setHours(24,0,0,0);
@@ -142,7 +156,7 @@ updateResetTimer();
 /* ---------- Inicialización ---------- */
 renderTasks();
 
-/* ---------- History helper (opcional) ---------- */
+/* ---------- History helper ---------- */
 function pushHistory(text){
   const arr = JSON.parse(localStorage.getItem('history') || '[]');
   arr.unshift(`${new Date().toLocaleString()} - ${text}`);
@@ -151,10 +165,10 @@ function pushHistory(text){
 }
 
 /* Hooks para history */
-document.getElementById('add-btn').addEventListener('click', ()=> pushHistory('Added task'));
+document.getElementById('add-btn').addEventListener('click', ()=> {}); // already pushes inside addTask
 document.getElementById('task-list').addEventListener('click', e=>{
-  if(e.target.matches('.del')) pushHistory('Deleted task');
+  if(e.target.matches('.del')) {} // handled above
 });
 document.getElementById('task-list').addEventListener('change', e=>{
-  if(e.target.matches('.chk')) pushHistory('Toggled task');
+  if(e.target.matches('.chk')) {} // handled above
 });

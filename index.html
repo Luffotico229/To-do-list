@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cyberpunk To‑Do — Netrunner Edition</title>
+  <title>Cyber To‑Do — Netrunner Edition</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
   <!-- OVERLAY para detectar clicks fuera -->
-  <div id="overlay" class="hidden"></div>
+  <div id="overlay" class="hidden" aria-hidden="true"></div>
 
-  <!-- HEADER con menu en la esquina superior derecha -->
+  <!-- TOPBAR con menu en la esquina superior derecha -->
   <header id="topbar">
     <div class="brand">⚡ Cyber To‑Do</div>
     <div id="menu-wrap">
@@ -29,8 +29,8 @@
     <!-- PANEL IZQUIERDO: INPUT + LISTA DE TAREAS -->
     <section id="left-column">
       <div id="task-input-box">
-        <input type="text" id="task-input" placeholder="New task..." />
-        <button id="add-btn">+ Add Task</button>
+        <input type="text" id="task-input" placeholder="New task..." aria-label="New task" />
+        <button id="add-btn" aria-label="Add task">+ Add Task</button>
       </div>
 
       <h1 class="title">Today's Tasks</h1>
@@ -38,7 +38,7 @@
       <ul id="task-list" aria-live="polite"></ul>
     </section>
 
-    <!-- PANEL DERECHO: TERMINAL / INFO (puede usarse para otras cosas) -->
+    <!-- PANEL DERECHO: TERMINAL / INFO -->
     <aside id="right-column">
       <div id="side-info">
         <div class="log-line">&gt; ACCESSING LOGS...</div>
@@ -51,14 +51,14 @@
   <!-- FOOTER: SCORE + TIMER -->
   <footer id="footer">
     <div id="score-box">Score: <span id="score">0</span></div>
-    <div id="reset-timer">Reset in: --</div>
+    <div id="reset-timer" title="Time until daily reset">Reset in: --</div>
   </footer>
 
   <!-- TERMINAL HOLOGRÁFICA (slide-in desde la derecha) -->
   <div id="history-terminal" class="hidden" role="dialog" aria-hidden="true">
     <div class="terminal-header">HISTORY</div>
     <div id="terminal-content"></div>
-    <button id="close-terminal">Close</button>
+    <button id="close-terminal" aria-label="Close history">Close</button>
   </div>
 
   <script src="main.js"></script>
