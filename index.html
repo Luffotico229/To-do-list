@@ -1,50 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Cyberpunk To‑Do — Netrunner Edition</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cyberpunk To‑Do — Netrunner Edition</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
 
-    <!-- PANEL IZQUIERDO: INPUT + MENÚ -->
-    <div id="left-panel">
+  <!-- OVERLAY para detectar clicks fuera -->
+  <div id="overlay" class="hidden"></div>
 
-        <div id="task-input-box">
-            <input type="text" id="task-input" placeholder="New task...">
-            <button id="add-btn" onclick="addTask()">ADD</button>
-        </div>
-
-        <!-- MENÚ FLOTANTE -->
-        <button id="menu-button">◎</button>
-
-        <div id="floating-menu">
-            <div class="menu-item" onclick="openHistory()">History</div>
-            <div class="menu-item" onclick="openSettings()">Settings</div>
-            <div class="menu-item" onclick="openThemes()">Themes</div>
-        </div>
-
+  <!-- HEADER con menu en la esquina superior derecha -->
+  <header id="topbar">
+    <div class="brand">⚡ Cyber To‑Do</div>
+    <div id="menu-wrap">
+      <button id="menu-button" aria-label="menu">☰</button>
+      <nav id="floating-menu" class="hidden" aria-hidden="true">
+        <div class="menu-item" id="menu-history">History</div>
+        <div class="menu-item" id="menu-settings">Settings</div>
+        <div class="menu-item" id="menu-themes">Themes</div>
+      </nav>
     </div>
+  </header>
 
-    <!-- PANEL DERECHO: LISTA DE TAREAS -->
-    <div id="task-panel">
-        <h1 class="neon">Today's Tasks</h1>
-        <ul id="task-list"></ul>
-    </div>
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main id="main">
+    <!-- PANEL IZQUIERDO: INPUT + LISTA DE TAREAS -->
+    <section id="left-column">
+      <div id="task-input-box">
+        <input type="text" id="task-input" placeholder="New task..." />
+        <button id="add-btn">+ Add Task</button>
+      </div>
 
-    <!-- FOOTER: SCORE + TIMER -->
-    <div id="footer">
-        <div id="score-box">Score: <span id="score">0</span></div>
-        <div id="reset-timer">Reset in: --</div>
-    </div>
+      <h1 class="title">Today's Tasks</h1>
 
-    <!-- TERMINAL HOLOGRÁFICA -->
-    <div id="history-terminal"></div>
+      <ul id="task-list" aria-live="polite"></ul>
+    </section>
 
-    <script src="score.js"></script>
-    <script src="timer.js"></script>
-    <script src="history.js"></script>
-    <script src="main.js"></script>
+    <!-- PANEL DERECHO: TERMINAL / INFO (puede usarse para otras cosas) -->
+    <aside id="right-column">
+      <div id="side-info">
+        <div class="log-line">&gt; ACCESSING LOGS...</div>
+        <div class="log-line">&gt; CONNECTING TO ARCHIVE NODE 07...</div>
+        <div class="log-line">&gt; DECRYPTING...</div>
+      </div>
+    </aside>
+  </main>
 
+  <!-- FOOTER: SCORE + TIMER -->
+  <footer id="footer">
+    <div id="score-box">Score: <span id="score">0</span></div>
+    <div id="reset-timer">Reset in: --</div>
+  </footer>
+
+  <!-- TERMINAL HOLOGRÁFICA (slide-in desde la derecha) -->
+  <div id="history-terminal" class="hidden" role="dialog" aria-hidden="true">
+    <div class="terminal-header">HISTORY</div>
+    <div id="terminal-content"></div>
+    <button id="close-terminal">Close</button>
+  </div>
+
+  <script src="main.js"></script>
 </body>
 </html>

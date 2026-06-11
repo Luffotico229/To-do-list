@@ -1,66 +1,141 @@
-let tasks = [];
+/* ---------- Datos y persistencia ---------- */
+let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
 
-function saveTasks() {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+function saveTasks(){ localStorage.setItem('tasks', JSON.stringify(tasks)); }
+function renderTasks(){
+  const ul = document.getElementById('task-list');
+  ul.innerHTML = '';
+  tasks.forEach((t,i)=>{
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <label>
+        <input type="checkbox" ${t.completed ? 'checked' : ''} data-index="${i}" class="chk">
+        <span>${escapeHtml(t.text)}</span>
+      </label>
+      <div>
+        <button data-del="${i}" class="del">X</button>
+      </div>
+    `;
+    ul.appendChild(li);
+  });
 }
 
-function loadTasks() {
-    tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+/* escape simple para evitar inyección */
+function escapeHtml(s){ return s.replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
+/* ---------- Operaciones de tareas ---------- */
+document.getElementById('add-btn').addEventListener('click', addTask);
+document.getElementById('task-input').addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); });
+
+function addTask(){
+  const input = document.getElementById('task-input');
+  const text = input.value.trim();
+  if(!text) return;
+  tasks.push({ text, completed:false });
+  saveTasks(); renderTasks();
+  input.value = '';
 }
 
-function renderTasks() {
-    const ul = document.getElementById("task-list");
-    ul.innerHTML = "";
+/* Delegación para checkbox y delete */
+document.getElementById('task-list').addEventListener('click', e=>{
+  if(e.target.matches('.del')){
+    const i = Number(e.target.dataset.del);
+    tasks.splice(i,1); saveTasks(); renderTasks();
+  }
+});
+document.getElementById('task-list').addEventListener('change', e=>{
+  if(e.target.matches('.chk')){
+    const i = Number(e.target.dataset.index);
+    tasks[i].completed = e.target.checked;
+    saveTasks(); renderTasks();
+  }
+});
 
-    tasks.forEach((task, index) => {
-        const li = document.createElement("li");
+/* ---------- Menu y Terminal (abrir/cerrar y click fuera) ---------- */
+const menuButton = document.getElementById('menu-button');
+const floatingMenu = document.getElementById('floating-menu');
+const overlay = document.getElementById('overlay');
+const historyTerminal = document.getElementById('history-terminal');
+const terminalContent = document.getElementById('terminal-content');
+const closeTerminalBtn = document.getElementById('close-terminal');
 
-        li.innerHTML = `
-            <label>
-                <input type="checkbox" onchange="toggleTask(${index})" ${task.completed ? "checked" : ""}>
-                ${task.text}
-            </label>
-            <button onclick="deleteTask(${index})">X</button>
-        `;
+function openMenu(){
+  floatingMenu.classList.remove('hidden');
+  floatingMenu.setAttribute('aria-hidden','false');
+  overlay.classList.remove('hidden');
+}
+function closeMenu(){
+  floatingMenu.classList.add('hidden');
+  floatingMenu.setAttribute('aria-hidden','true');
+  if(!historyTerminal.classList.contains('open')) overlay.classList.add('hidden');
+}
+menuButton.addEventListener('click', e=>{
+  e.stopPropagation();
+  if(floatingMenu.classList.contains('hidden')) openMenu(); else closeMenu();
+});
 
-        ul.appendChild(li);
-    });
+/* Abrir historial desde menu */
+document.getElementById('menu-history').addEventListener('click', e=>{
+  e.stopPropagation();
+  openHistory();
+  closeMenu();
+});
+
+/* Abrir terminal */
+function openHistory(){
+  // llenar contenido simple (puedes personalizar)
+  terminalContent.innerHTML = '';
+  const logs = JSON.parse(localStorage.getItem('history') || '[]');
+  if(logs.length===0) terminalContent.innerHTML = '<div style="opacity:.6">No history yet.</div>';
+  else logs.forEach(l=>{
+    const d = document.createElement('div'); d.textContent = l; terminalContent.appendChild(d);
+  });
+  historyTerminal.classList.add('open');
+  historyTerminal.setAttribute('aria-hidden','false');
+  overlay.classList.remove('hidden');
 }
 
-function addTask() {
-    const input = document.getElementById("task-input");
-    const text = input.value.trim();
-    if (!text) return;
-
-    tasks.push({ text, completed: false });
-    saveTasks();
-    renderTasks();
-    input.value = "";
+/* Cerrar terminal */
+function closeHistory(){
+  historyTerminal.classList.remove('open');
+  historyTerminal.setAttribute('aria-hidden','true');
+  if(floatingMenu.classList.contains('hidden')) overlay.classList.add('hidden'); else overlay.classList.remove('hidden');
 }
 
-function toggleTask(i) {
-    tasks[i].completed = !tasks[i].completed;
-    saveTasks();
-    renderTasks();
-}
+/* Botón cerrar dentro del terminal */
+closeTerminalBtn.addEventListener('click', e=>{ e.stopPropagation(); closeHistory(); });
 
-function deleteTask(i) {
-    tasks.splice(i, 1);
-    saveTasks();
-    renderTasks();
-}
+/* Click en overlay cierra todo (menu o terminal) */
+overlay.addEventListener('click', ()=>{
+  closeMenu();
+  closeHistory();
+});
 
-/* MENÚ */
-const menuButton = document.getElementById("menu-button");
-const floatingMenu = document.getElementById("floating-menu");
+/* Evitar que clicks dentro del menu o terminal propaguen y cierren */
+floatingMenu.addEventListener('click', e=> e.stopPropagation());
+historyTerminal.addEventListener('click', e=> e.stopPropagation());
 
-menuButton.onclick = () => {
-    floatingMenu.style.display =
-        floatingMenu.style.display === "flex" ? "none" : "flex";
-};
+/* Cerrar con ESC */
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Escape'){ closeMenu(); closeHistory(); }
+});
 
-/* INIT */
-loadTasks();
+/* ---------- Inicialización ---------- */
 renderTasks();
-loadScore();
-updateResetTimer();
+
+/* ---------- Opcional: guardar acciones en history (ejemplo) ---------- */
+function pushHistory(text){
+  const arr = JSON.parse(localStorage.getItem('history') || '[]');
+  arr.unshift(`${new Date().toLocaleString()} - ${text}`);
+  if(arr.length>100) arr.pop();
+  localStorage.setItem('history', JSON.stringify(arr));
+}
+
+/* Ejemplos de hooks para history: */
+document.getElementById('add-btn').addEventListener('click', ()=> pushHistory('Added task'));
+document.getElementById('task-list').addEventListener('click', e=>{
+  if(e.target.matches('.del')) pushHistory('Deleted task');
+});
+document.getElementById('task-list').addEventListener('change', e=>{
+  if(e.target.matches('.chk')) pushHistory('Toggled task');
+});
