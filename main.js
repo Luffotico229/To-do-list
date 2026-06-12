@@ -13,6 +13,7 @@ function renderTasks(){
         <span>${escapeHtml(t.text)}</span>
       </label>
       <div>
+        <button data-edit="${i}" class="edit-btn" aria-label="Edit task">✏️</button>
         <button data-del="${i}" class="del" aria-label="Delete task">X</button>
       </div>
     `;
@@ -56,6 +57,15 @@ document.getElementById('task-list').addEventListener('click', e=>{
     const removed = tasks.splice(i,1);
     saveTasks(); renderTasks();
     pushHistory('Deleted task: ' + (removed[0]?.text || ''));
+  }
+  if(e.target.matches('.edit-btn')){
+    const i = Number(e.target.dataset.edit);
+    const newText = prompt('Edit task:', tasks[i].text);
+    if(newText && newText.trim()){
+      tasks[i].text = newText.trim();
+      saveTasks(); renderTasks();
+      pushHistory('Edited task: ' + tasks[i].text);
+    }
   }
 });
 document.getElementById('task-list').addEventListener('change', e=>{
