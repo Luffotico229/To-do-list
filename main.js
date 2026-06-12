@@ -174,6 +174,7 @@ updateResetTimer();
 
 /* ---------- Inicialización ---------- */
 renderTasks();
+loadScore();
 
 /* ---------- History helper ---------- */
 function pushHistory(text){
