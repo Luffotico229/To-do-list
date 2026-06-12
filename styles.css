@@ -153,6 +153,13 @@ body{
 }
 #add-btn:active{ transform: translateY(1px) scale(0.995); }
 
+.task-time {
+  margin-left: 10px;
+  color: var(--accent-cyan);
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
 /* Title */
 .title{margin:6px 0 12px 0; color:var(--accent-blue)}
 
@@ -224,6 +231,27 @@ body{
 }
 #score-box{color:var(--accent-green); font-weight:700}
 #reset-timer{color:var(--accent-yellow); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60vw}
+
+/* Drag & Drop */
+.drag-handle {
+  cursor: grab;
+  padding: 6px;
+  color: var(--accent-yellow);
+  font-size: 18px;
+  user-select: none;
+}
+
+.drag-handle:active {
+  cursor:grabbing;
+}
+
+/* Estilo de la hora de las tareas */
+.task-time {
+  margin-left: 10px;
+  color: var(--accent-cyan);
+  font-size: 0.9em;
+  opacity: 0.8;
+}
 
 /* HISTORY TERMINAL (slide-in) */
 #history-terminal{

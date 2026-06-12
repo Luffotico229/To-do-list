@@ -1,17 +1,31 @@
 /* ---------- Datos y persistencia ---------- */
 let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
 
+let dragSrcIndex = null;
+
 function saveTasks(){ localStorage.setItem('tasks', JSON.stringify(tasks)); }
+
 function renderTasks(){
   const ul = document.getElementById('task-list');
   ul.innerHTML = '';
   tasks.forEach((t,i)=>{
     const li = document.createElement('li');
+
+     // 🔥 Hacemos que el <li> sea arrastrable
+    li.draggable = true;
+
+    // 🔥 Guardamos el índice actual dentro del <li>
+    li.dataset.index = i; 
+
     li.innerHTML = `
+    <div class="drag-handle">☰</div>
+
       <label>
         <input type="checkbox" ${t.completed ? 'checked' : ''} data-index="${i}" class="chk">
         <span>${escapeHtml(t.text)}</span>
+        <span class="task-time">${t.time ? t.time : ""}</span>
       </label>
+
       <div>
         <button data-edit="${i}" class="edit-btn" aria-label="Edit task">✏️</button>
         <button data-del="${i}" class="del" aria-label="Delete task">X</button>
@@ -32,7 +46,12 @@ function addTask(){
   const input = document.getElementById('task-input');
   const text = input.value.trim();
   if(!text) return;
-  tasks.push({ text, completed:false });
+  tasks.push({
+    text: newTaskText,
+    completed:false,
+    time: "" // ← nuevo campo
+
+    });
   saveTasks();
   renderTasks();
 
@@ -50,8 +69,27 @@ function addTask(){
   pushHistory('Added task: ' + text);
 }
 
+function editTask(i) {
+  // Editar texto
+  const newText = prompt("Edit task:", tasks[i].text);
+  if (newText === null) return; //cancelar
+
+  // Editar hora
+  const newTime = prompt("Edit time (HH:MM):", tasks[i].time || "");
+
+  tasks[i].text = newText.trim();
+  tasks[i].time = newTime.trim();
+
+  saveTasks();
+  renderTasks();
+}
+
 /* Delegación para checkbox y delete */
 document.getElementById('task-list').addEventListener('click', e=>{
+  if (e.target.dataset.edit !== undefined) {
+    const i = Number(e.target.dataset.edit);
+    editTask(i);
+  }
   if(e.target.matches('.del')){
     const i = Number(e.target.dataset.del);
     const removed = tasks.splice(i,1);
@@ -68,6 +106,7 @@ document.getElementById('task-list').addEventListener('click', e=>{
     }
   }
 });
+
 document.getElementById('task-list').addEventListener('change', e=>{
   if(e.target.matches('.chk')){
     const i = Number(e.target.dataset.index);

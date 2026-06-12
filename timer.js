@@ -16,11 +16,13 @@ function updateResetTimer() {
     const t = getTimeUntilMidnight();
     const timerEl = document.getElementById("reset-timer");
 
-    timerEl.textContent = `Reset in: ${t.hours}h ${t.minutes}m ${t.seconds}s`;
-
     if (t.diff <= 0) {
         resetTasks();
+        return;
     }
+
+    timerEl.textContent = `Reset in: ${t.hours}h ${t.minutes}m ${t.seconds}s`;
+
 }
 
 setInterval(updateResetTimer, 1000);
