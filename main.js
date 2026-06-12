@@ -1,6 +1,5 @@
 /* ---------- Datos y persistencia ---------- */
 let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-
 let dragSrcIndex = null;
 
 function saveTasks(){ localStorage.setItem('tasks', JSON.stringify(tasks)); }
@@ -22,8 +21,10 @@ function renderTasks(){
 
       <label>
         <input type="checkbox" ${t.completed ? 'checked' : ''} data-index="${i}" class="chk">
+
         <span>${escapeHtml(t.text)}</span>
         <span class="task-time">${t.time ? t.time : ""}</span>
+
       </label>
 
       <div>
@@ -42,16 +43,18 @@ function escapeHtml(s){ return s.replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;
 document.getElementById('add-btn').addEventListener('click', addTask);
 document.getElementById('task-input').addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); });
 
+/* ----- Anadir nuevas tareas ----- */
 function addTask(){
   const input = document.getElementById('task-input');
   const text = input.value.trim();
   if(!text) return;
+
   tasks.push({
     text: newTaskText,
-    completed:false,
+    completed: false,
     time: "" // ← nuevo campo
-
     });
+
   saveTasks();
   renderTasks();
 
@@ -69,6 +72,7 @@ function addTask(){
   pushHistory('Added task: ' + text);
 }
 
+/* ----- Editar tareas ----- */
 function editTask(i) {
   // Editar texto
   const newText = prompt("Edit task:", tasks[i].text);
@@ -233,3 +237,91 @@ function pushHistory(text){
   if(arr.length>200) arr.pop();
   localStorage.setItem('history', JSON.stringify(arr));
 }
+
+/* ----- Eventos de drag & drop ----- */
+let dragSrcIndex = null;
+const taskList = document.getElementById("task-list");
+
+// ----- Cuando empiezas a arrastrar ------
+taskList.addEventListener("dragstart", (e) => {
+  if (e.target.classList.contains("drag-handle")) {
+    dragSrcIndex = Number(e.target.parentElement.dataset.index);
+  }
+});
+
+// ----- Permitir soltar -----
+taskList.addEventListener("dragover", (e) => {
+  e.preventDefault();
+});
+
+// ----- Cuando sueltas -----
+taskList.addEventListener("drop", (e) => {
+  const li = e.target.closest("li");
+  if (!li) return;
+  
+  const dropIndex = Number(li.dataset.index);
+
+  // ----- mover tarea en el array -----
+  const moved = tasks.splice(dragSrcIndex, 1)[0];
+  tasks.splice(dropIndex, 0, moved);
+
+  saveTasks();
+  renderTasks();
+})
+
+// ===============================
+// HOLOGRAPHIC PANEL TRANSFORM
+// ===============================
+
+const floatBtn = document.getElementById("float-add-btn");
+const holoPanel = document.getElementById("holo-panel");
+const holoContent = document.querySelector(".holo-content");
+const holoClose = document.querySelector(".holo-close");
+
+let holoOpen = false;
+
+// Abrir / Expandir el panel
+floatBtn.addEventListener("click", () => {
+  if (holoOpen) return;
+
+  holoOpen = true;
+
+  // Ocultar el "+" durante la animación
+  floatBtn.style.opacity = "0";
+
+  // Expandir el panel
+  holoPanel.classList.add("expanded");
+
+  // Mostrar contenido con glitch + fade
+  setTimeout(() => {
+    holoContent.style.opacity = "1";
+  }, 300);
+});
+
+// Cerrar / Contraer el panel
+function closeHoloPanel() {
+  if (!holoOpen) return;
+
+  holoOpen = false;
+
+  // Ocultar contenido
+  holoContent.style.opacity = "0";
+
+  // Contraer panel
+  holoPanel.classList.remove("expanded");
+
+  // Mostrar el "+" de nuevo
+  setTimeout(() => {
+    floatBtn.style.opacity = "1";
+  }, 350);
+}
+
+// Botón CLOSE
+holoClose.addEventListener("click", closeHoloPanel);
+
+// Cerrar tocando fuera del panel
+holoPanel.addEventListener("click", (e) => {
+  if (e.target === holoPanel) {
+    closeHoloPanel();
+  }
+});

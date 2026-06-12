@@ -66,6 +66,22 @@
   <script src="timer.js"></script>
   <script src="history.js"></script>
   <script src="main.js"></script>
-  <button id="float-add-btn" arial-label="Add task">+</button>
+
+  <! -- Boton flotante q se transforma en el panel -->
+  <button id="float-add-btn" arial-label="Open holo menu">+</button>
+
+  <! -- Contenedor del panel holografico (inicialmente oculto) -->
+  <div id="holo-panel" class="holo-collapsed" aria-hidden="true">
+    <div class=""holo-content">
+      <div class=""holo-title">SYSTEM MODULES</div>
+
+      <div class="holo-item">+ Advanced Task (soon)</div>
+      <div class="holo-item">+ Quick Task (soon)</div>
+      <div class="holo-item">+ Task With Time (soon)</div>
+
+      <div class="holo-close">CLOSE</div>
+    </div>
+  </div>
+
 </body>
 </html>
