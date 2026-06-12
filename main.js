@@ -61,7 +61,15 @@ document.getElementById('task-list').addEventListener('click', e=>{
 document.getElementById('task-list').addEventListener('change', e=>{
   if(e.target.matches('.chk')){
     const i = Number(e.target.dataset.index);
+    const wasCompleted = tasks[i].completed;
     tasks[i].completed = e.target.checked;
+
+    if(e.target.checked && !wasCompleted){
+      addPoints(10);
+    } else if(!e.target.checked && wasCompleted){
+      subtractPoints(10);
+    }
+
     saveTasks(); renderTasks();
     pushHistory('Toggled task: ' + tasks[i].text);
   }
