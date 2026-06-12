@@ -175,6 +175,7 @@ updateResetTimer();
 /* ---------- Inicialización ---------- */
 renderTasks();
 loadScore();
+document.getElementById('float-add-btn').addEventListener('click', addTask);
 
 /* ---------- History helper ---------- */
 function pushHistory(text){

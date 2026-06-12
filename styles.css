@@ -85,6 +85,28 @@ body{
 }
 .menu-item:hover{background:rgba(255,255,255,0.02)}
 
+/* Boton de mas en el centro */
+#float-add-btn{
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:var(--accent-green);
+  color:#07110a;
+  font-size:28px;
+  font-weight: 700;
+  border:none;
+  cursor:pointer;
+  z-index:30;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+
 /* MAIN layout: left tasks, right info */
 #main{
   display:flex;
